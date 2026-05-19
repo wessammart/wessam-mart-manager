@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وسام مارت - لوحة المشرف</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Tajawal:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0A0E1A;
+            --bg2: #0F1525;
+            --card: #141E30;
+            --card2: #1A2640;
+            --border: #1E2D45;
+            --text: #EEF2FF;
+            --muted: #64748B;
+            --primary: #6366F1;
+            --primary-light: #818CF8;
+            --primary-dim: rgba(99, 102, 241, 0.12);
+            --green: #10B981;
+            --green-dim: rgba(16, 185, 129, 0.12);
+            --red: #EF4444;
+            --red-dim: rgba(239, 68, 68, 0.12);
+            --yellow: #F59E0B;
+            --yellow-dim: rgba(245, 158, 11, 0.12);
+            --orange: #F97316;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== LOGIN ===== */
+        #loginScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(ellipse at 25% 25%, rgba(99, 102, 241, 0.1) 0%, transparent 55%),
+                radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.07) 0%, transparent 55%), var(--bg);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 44px 36px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .logo-icon {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 22px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.35);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon svg {
+            width: 38px;
+            height: 38px;
+            color: white;
+        }
+
+        .login-title {
+            font-family: 'Almarai', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-title span {
+            color: var(--primary-light);
+        }
+
+        .login-sub {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .inp {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--bg2);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            margin-bottom: 13px;
+            transition: border-color 0.2s;
+        }
+
+        .inp:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
+        }
+
+        .err-msg {
+            color: var(--red);
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* ===== DASHBOARD ===== */
+        #dashboard {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 13px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-icon svg {
+            width: 22px;
+            height: 22px;
+            color: white;
+        }
+
+        .topbar-title {
+            font-family: 'Almarai', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+        }
+
+        .topbar-role {
+            font-size: 12px;
+            color: var(--primary-light);
+            margin-top: 1px;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: var(--red-dim);
+            border: 1px solid var(--red);
+            color: var(--red);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: var(--red);
+            color: white;
+        }
+
+        /* Tabs */
+        .tabs-bar {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            padding: 0 16px;
+        }
+
+        .tab-btn {
+            padding: 14px 20px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+        }
+
+        /* Main */
+        .main {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Cards */
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            font-family: 'Almarai', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Form */
+        label.lbl {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .inp-full {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg2);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .inp-full:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-danger {
+            padding: 8px 14px;
+            background: var(--red-dim);
+            border: 1px solid var(--red);
+            color: var(--red);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: var(--red);
+            color: white;
+        }
+
+        .btn-edit {
+            padding: 8px 14px;
+            background: var(--primary-dim);
+            border: 1px solid var(--primary);
+            color: var(--primary-light);
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Products grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .product-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .product-card-body {
+            padding: 10px;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            color: var(--green);
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .oos-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--red-dim);
+            color: var(--red);
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Orders */
+        .order-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .order-card:hover {
+            border-color: var(--primary);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .order-name {
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .order-phone {
+            color: var(--muted);
+            font-size: 13px;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .order-total {
+            color: var(--green);
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        .order-item-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 6px;
+        }
+
+        .order-item-row img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .s-pending {
+            background: var(--yellow-dim);
+            color: var(--yellow);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .s-delivering {
+            background: rgba(59, 130, 246, 0.12);
+            color: #60A5FA;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .s-delivered {
+            background: rgba(139, 92, 246, 0.12);
+            color: #A78BFA;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .s-completed {
+            background: var(--green-dim);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Image preview */
+        .img-preview {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .img-preview img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        /* Option box */
+        .option-box {
+            background: var(--bg);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .option-box-title {
+            font-size: 12px;
+            color: var(--primary-light);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .modal-title {
+            font-family: 'Almarai', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            padding: 13px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Tajawal', sans-serif;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .toast.ok {
+            background: var(--green);
+            color: #0A0E1A;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+        }
+
+        .toast.err {
+            background: var(--red);
+            color: white;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.35);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--muted);
+        }
+
+        .empty-state svg {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 14px;
+            opacity: 0.3;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--primary-dim);
+            color: var(--primary-light);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            margin-bottom: 16px;
+        }
+
+        @media(max-width:480px) {
+            .main {
+                padding: 10px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .panel {
+                padding: 14px;
+            }
+
+            .tab-btn {
+                padding: 11px 12px;
+                font-size: 13px;
+            }
+
+            .modal-box {
+                padding: 18px 14px;
+            }
+
+            .login-box {
+                padding: 32px 20px;
+            }
+        }
+
+        @media(max-width:360px) {
+            .tab-btn {
+                padding: 10px 9px;
+                font-size: 12px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- شاشة الدخول -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="logo-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+            <h1 class="login-title">وسام <span>مارت</span></h1>
+            <p class="login-sub">لوحة المشرف — سجل دخولك للمتابعة</p>
+            <input type="text" id="uInp" class="inp" placeholder="اسم المستخدم" autocomplete="username">
+            <input type="password" id="pInp" class="inp" placeholder="كلمة المرور" autocomplete="current-password">
+            <p class="err-msg" id="errMsg">بيانات الدخول غير صحيحة</p>
+            <button class="btn-login" id="loginBtn" onclick="doLogin()">
+                <span id="loginBtnTxt">دخول</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- لوحة المشرف -->
+    <div id="dashboard">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="topbar-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="topbar-title">وسام مارت</div>
+                    <div class="topbar-role" id="staffRoleLabel">مشرف قسم</div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="doLogout()">خروج</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-bar">
+            <div class="tab-btn active" id="tab-btn-products" onclick="showTab('products')">
+                📦 المنتجات
+            </div>
+            <div class="tab-btn" id="tab-btn-add" onclick="openAddModal()">
+                ➕ إضافة منتج
+            </div>
+
+        </div>
+
+        <div class="main">
+
+            <!-- تبويب المنتجات -->
+            <div id="tab-products">
+                <div class="panel">
+                    <div class="panel-title">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V7" />
+                        </svg>
+                        منتجات قسمك
+                    </div>
+                    <div class="section-label" id="sectionLabelProd">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        <span id="sectionLabelText">-</span>
+                    </div>
+                    <div class="products-grid" id="productsList">
+                        <div class="empty-state" style="grid-column:1/-1">
+                            <div class="spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;">
+                            </div>
+                            <p>جاري التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+
+    <!-- Modal إضافة منتج -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title">➕ إضافة منتج جديد</span>
+                <button class="modal-close" onclick="closeAddModal()">&times;</button>
+            </div>
+            <form onsubmit="addProduct(event)" id="addProductForm">
+                <div class="form-group">
+                    <label class="lbl">اسم المنتج <span style="color:var(--red)">*</span></label>
+                    <input type="text" id="pName" class="inp-full" required placeholder="مثال: عصير برتقال">
+                </div>
+                <div class="form-group">
+                    <label class="lbl">السعر (ريال) <span style="color:var(--red)">*</span></label>
+                    <input type="text" id="pPrice" class="inp-full" required placeholder="مثال: 10 ريال">
+                </div>
+                <div class="option-box">
+                    <div class="option-box-title">🌡️ درجة الحرارة (اختياري)</div>
+                    <input type="hidden" id="pOptionName" value="الحرارة">
+                    <input type="hidden" id="pOptionValues" value="">
+                    <div style="display:flex;gap:10px;">
+                        <button type="button" id="btnHot" onclick="toggleTempOption('حار')"
+                            style="flex:1;padding:12px;border-radius:12px;border:2px solid #F97316;background:rgba(249,115,22,0.1);color:#FB923C;font-family:'Tajawal',sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all 0.2s;">
+                            🔥 حار
+                        </button>
+                        <button type="button" id="btnCold" onclick="toggleTempOption('بارد')"
+                            style="flex:1;padding:12px;border-radius:12px;border:2px solid #38BDF8;background:rgba(56,189,248,0.1);color:#7DD3FC;font-family:'Tajawal',sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all 0.2s;">
+                            ❄️ بارد
+                        </button>
+                    </div>
+                    <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">اضغط على خيار أو
+                        اثنين أو اتركهم فارغين</p>
+                </div>
+                <!-- حقل الكمية -->
+                <div class="form-group" style="margin-top:14px;">
+                    <label class="lbl">📦 الكمية المتاحة</label>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <label
+                            style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;color:var(--text);">
+                            <input type="checkbox" id="pUnlimitedQty" onchange="toggleQtyField('add')"
+                                style="width:18px;height:18px;accent-color:var(--primary);cursor:pointer;">
+                            ♾️ غير محدود (البيع بلا توقف)
+                        </label>
+                    </div>
+                    <input type="number" id="pQty" class="inp-full" min="0" placeholder="مثال: 100"
+                        style="display:block;" oninput="if(this.value<0)this.value=0;">
+                    <p style="font-size:11px;color:var(--muted);margin-top:4px;">إذا وصلت الكمية للصفر، يُعلَّم المنتج
+                        بـ «نفذت الكمية» تلقائياً</p>
+                </div>
+                <div class="form-group" style="margin-top:14px;">
+                    <label class="lbl">صورة المنتج <span style="color:var(--red)">*</span> <span
+                            style="color:var(--muted)">(أقل من 2MB)</span></label>
+                    <input type="file" id="pImage" class="inp-full" accept="image/*" required
+                        onchange="previewImg(this,'addPreview','addPreviewImg')">
+                    <div class="img-preview" id="addPreview"><img id="addPreviewImg" alt=""></div>
+                    <p id="imgSizeErr" class="err-msg" style="margin-top:6px;">⚠️ الصورة أكبر من 2MB</p>
+                </div>
+                <button type="submit" class="btn-primary" id="addBtn" style="width:100%;padding:14px;">
+                    <span id="addBtnTxt">إضافة المنتج</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal تعديل منتج -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title">✏️ تعديل المنتج</span>
+                <button class="modal-close" onclick="closeEdit()">&times;</button>
+            </div>
+            <form onsubmit="saveEdit(event)">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="editCurrentImage">
+                <div class="form-group">
+                    <label class="lbl">اسم المنتج</label>
+                    <input type="text" id="editName" class="inp-full" required>
+                </div>
+                <div class="form-group">
+                    <label class="lbl">السعر</label>
+                    <input type="text" id="editPrice" class="inp-full" required>
+                </div>
+                <div class="form-group">
+                    <div
+                        style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--red-dim);border-radius:10px;border:1px solid rgba(239,68,68,0.3);">
+                        <input type="checkbox" id="editOOS"
+                            style="width:18px;height:18px;accent-color:var(--red);cursor:pointer;">
+                        <label for="editOOS" style="color:var(--red);font-weight:700;cursor:pointer;">نفذت
+                            الكمية</label>
+                    </div>
+                </div>
+                <div class="option-box">
+                    <div class="option-box-title">🌡️ درجة الحرارة</div>
+                    <input type="hidden" id="editOptionName" value="الحرارة">
+                    <input type="hidden" id="editOptionValues" value="">
+                    <div style="display:flex;gap:10px;">
+                        <button type="button" id="editBtnHot" onclick="toggleEditTempOption('حار')"
+                            style="flex:1;padding:12px;border-radius:12px;border:2px solid #F97316;background:rgba(249,115,22,0.1);color:#FB923C;font-family:'Tajawal',sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all 0.2s;">
+                            🔥 حار
+                        </button>
+                        <button type="button" id="editBtnCold" onclick="toggleEditTempOption('بارد')"
+                            style="flex:1;padding:12px;border-radius:12px;border:2px solid #38BDF8;background:rgba(56,189,248,0.1);color:#7DD3FC;font-family:'Tajawal',sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all 0.2s;">
+                            ❄️ بارد
+                        </button>
+                    </div>
+                    <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">اضغط لتفعيل / إلغاء
+                    </p>
+                </div>
+                <!-- حقل الكمية - تعديل -->
+                <div class="form-group" style="margin-top:14px;">
+                    <label class="lbl">📦 الكمية المتاحة</label>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+                        <input type="checkbox" id="editUnlimitedQty" onchange="toggleQtyField('edit')"
+                            style="width:18px;height:18px;accent-color:var(--primary);cursor:pointer;">
+                        <label for="editUnlimitedQty" style="font-size:14px;color:var(--text);cursor:pointer;">♾️ غير
+                            محدود (البيع بلا توقف)</label>
+                    </div>
+                    <input type="number" id="editQty" class="inp-full" min="0" placeholder="مثال: 100"
+                        style="display:block;" oninput="if(this.value<0)this.value=0;">
+                </div>
+                <div class="form-group" style="margin-top:14px;">
+                    <label class="lbl">تغيير الصورة (اختياري)</label>
+                    <input type="file" id="editImage" class="inp-full" accept="image/*"
+                        onchange="previewImg(this,'editPreview','editPreviewImg')">
+                    <div class="img-preview" id="editPreview"><img id="editPreviewImg" alt=""></div>
+                    <p id="editImgSizeErr" class="err-msg" style="margin-top:6px;">⚠️ الصورة أكبر من 2MB</p>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:6px;">
+                    <button type="submit" class="btn-primary" style="flex:1;padding:13px;">حفظ التعديلات</button>
+                    <button type="button" class="btn-danger" onclick="closeEdit()"
+                        style="flex:1;padding:13px;">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyA2N_lsZ7yyvT1kIydXFkW_fLVFH0kQRBk",
+            authDomain: "wessam-8ac1d.firebaseapp.com",
+            projectId: "wessam-8ac1d",
+            storageBucket: "wessam-8ac1d.firebasestorage.app",
+            messagingSenderId: "140878579052",
+            appId: "1:140878579052:web:53a52b34a176171cf6df49"
+        });
+        const db = firebase.firestore();
+        const MAX_IMG = 2 * 1024 * 1024;
+
+        const storeLabels = {
+            market: 'البقالات', restaurant: 'المطاعم', coffee: 'كوفي',
+            coffeeMudhal: 'كوفي مدهال', veggies: 'خضار وفواكه', homemade: 'إسر منتجات'
+        };
+
+        let staffData = null;
+        let allProducts = [];
+        let unsub = { products: null, orders: null };
+
+        // Toast
+        function toast(msg, err) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.className = 'toast ' + (err ? 'err' : 'ok');
+            requestAnimationFrame(() => t.classList.add('show'));
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        // Image preview
+        function previewImg(input, divId, imgId) {
+            const div = document.getElementById(divId);
+            const img = document.getElementById(imgId);
+            const file = input.files[0];
+            if (!file) { div.style.display = 'none'; return; }
+            const reader = new FileReader();
+            reader.onload = e => { img.src = e.target.result; div.style.display = 'flex'; };
+            reader.readAsDataURL(file);
+        }
+
+        // File to compressed base64
+        function toBase64(file) {
+            return new Promise((res, rej) => {
+                const reader = new FileReader();
+                reader.onerror = rej;
+                reader.onloadend = () => {
+                    const img = new Image();
+                    img.onerror = rej;
+                    img.onload = () => {
+                        const MAX_DIM = 600;
+                        let { width, height } = img;
+                        if (width > MAX_DIM || height > MAX_DIM) {
+                            if (width > height) { height = Math.round(height * MAX_DIM / width); width = MAX_DIM; }
+                            else { width = Math.round(width * MAX_DIM / height); height = MAX_DIM; }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width; canvas.height = height;
+                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                        res(canvas.toDataURL('image/jpeg', 0.65));
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Tab
+        function showTab(name) {
+            // Only products tab remains; add is now a modal
+            ['products'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== name);
+                document.getElementById(`tab-btn-${t}`).classList.toggle('active', t === name);
+            });
+            // Keep add button un-active
+            const addBtn = document.getElementById('tab-btn-add');
+            if (addBtn) addBtn.classList.remove('active');
+        }
+
+        // ── حماية Brute Force ──────────────────────────
+        const _lAttempts = { count: 0, lockedUntil: 0 };
+        const _MAX_ATT = 5, _LOCK_MS = 15 * 60 * 1000;
+
+        async function _hashPass(plain) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(plain));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Login
+        async function doLogin() {
+            const u = document.getElementById('uInp').value.trim();
+            const p = document.getElementById('pInp').value;
+            const errEl = document.getElementById('errMsg');
+            const btn = document.getElementById('loginBtn');
+
+            const now = Date.now();
+            if (_lAttempts.lockedUntil > now) {
+                const mins = Math.ceil((_lAttempts.lockedUntil - now) / 60000);
+                errEl.textContent = `تم تجاوز عدد المحاولات. حاول بعد ${mins} دقيقة.`;
+                errEl.style.display = 'block'; return;
+            }
+            if (!u || !p) { errEl.textContent = 'أدخل اسم المستخدم وكلمة المرور'; errEl.style.display = 'block'; return; }
+            btn.disabled = true;
+            document.getElementById('loginBtnTxt').innerHTML = '<span class="spinner"></span> جاري الدخول...';
+            try {
+                const snap = await db.collection('staff').where('username', '==', u).get();
+                if (snap.empty) throw new Error('wrong');
+                const doc = snap.docs[0].data();
+                let match = false;
+                if (doc.password && doc.password.length === 64) {
+                    // كلمة السر محفوظة مشفرة
+                    const hashed = await _hashPass(p);
+                    match = (hashed === doc.password);
+                } else {
+                    // كلمة السر محفوظة عادية
+                    match = (p === doc.password);
+                }
+                if (!match) throw new Error('wrong');
+                _lAttempts.count = 0;
+                staffData = { ...doc, id: snap.docs[0].id };
+                enterDashboard();
+            } catch (e) {
+                _lAttempts.count++;
+                if (_lAttempts.count >= _MAX_ATT) {
+                    _lAttempts.lockedUntil = Date.now() + _LOCK_MS;
+                    _lAttempts.count = 0;
+                    errEl.textContent = 'تم تجاوز عدد المحاولات. حاول بعد 15 دقيقة.';
+                } else {
+                    errEl.textContent = 'بيانات الدخول غير صحيحة';
+                }
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                document.getElementById('loginBtnTxt').textContent = 'دخول';
+            }
+        }
+
+        function enterDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            const label = storeLabels[staffData.storeId] || staffData.storeId;
+            document.getElementById('staffRoleLabel').textContent = `مشرف قسم: ${label}`;
+            document.getElementById('sectionLabelText').textContent = label;
+            listenProducts();
+        }
+
+        function doLogout() {
+            if (unsub.products) unsub.products();
+            staffData = null; allProducts = [];
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('uInp').value = '';
+            document.getElementById('pInp').value = '';
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtnTxt').textContent = 'دخول';
+        }
+
+        // Products listener
+        function listenProducts() {
+            unsub.products = db.collection('products')
+                .where('storeType', '==', staffData.storeId)
+                .onSnapshot(snap => {
+                    allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderProducts();
+                });
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsList');
+            if (!allProducts.length) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10V7"/>
+      </svg>
+      <p>لا توجد منتجات بعد</p>
+    </div>`;
+                return;
+            }
+            grid.innerHTML = allProducts.map(p => {
+                let pr = p.price;
+                if (typeof pr === 'string' && !pr.includes('ريال')) pr += ' ريال';
+                const unlimited = p.unlimitedQty === true;
+                const qty = p.quantity;
+                let qtyBadge = '';
+                if (unlimited) {
+                    qtyBadge = `<span style="display:inline-block;margin-bottom:6px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.4);color:#818CF8;">♾️ غير محدود</span>`;
+                } else if (qty !== null && qty !== undefined) {
+                    const color = qty <= 0 ? 'rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#F87171;' : qty <= 5 ? 'rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#FCD34D;' : 'rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:#34D399;';
+                    qtyBadge = `<span style="display:inline-block;margin-bottom:6px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:${color}">📦 الكمية: ${qty}</span>`;
+                }
+                return `<div class="product-card">
+      <img src="${p.image}" onerror="this.src='https://via.placeholder.com/160x120?text=صورة'" alt="${p.name}">
+      <div class="product-card-body">
+        ${p.outOfStock ? '<span class="oos-badge">نفذت الكمية</span>' : ''}
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">${pr}</div>
+        ${qtyBadge}
+        <div class="product-actions">
+          <button class="btn-edit" style="flex:1" onclick="openEdit('${p.id}')">تعديل</button>
+          <button class="btn-danger" style="flex:1" onclick="deleteProd('${p.id}')">حذف</button>
+        </div>
+      </div>
+    </div>`;
+            }).join('');
+        }
+
+        // Orders listener
+        function listenOrders() {
+            unsub.orders = db.collection('orders')
+                .where('storeType', '==', staffData.storeId)
+                .onSnapshot(snap => {
+                    const orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderOrders(orders);
+                });
+        }
+
+        function statusInfo(s) {
+            if (s === 'pending' || s === 'assigned') return { cls: 's-pending', label: '⏳ قيد الانتظار' };
+            if (s === 'delivering') return { cls: 's-delivering', label: '🚀 بالطريق' };
+            if (s === 'delivered') return { cls: 's-delivered', label: '📦 وصل' };
+            return { cls: 's-completed', label: '✅ مكتمل' };
+        }
+
+        function renderOrders(orders) {
+            const list = document.getElementById('ordersList');
+            if (!orders.length) {
+                list.innerHTML = `<div class="empty-state">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      <p>لا توجد طلبات لقسمك بعد</p>
+    </div>`;
+                return;
+            }
+            // Sort newest first
+            const sorted = [...orders].sort((a, b) => {
+                const ta = a.date?.toDate?.()?.getTime() || 0;
+                const tb = b.date?.toDate?.()?.getTime() || 0;
+                return tb - ta;
+            });
+            list.innerHTML = sorted.map(o => {
+                const st = statusInfo(o.status);
+                const payBadge = o.paymentMethod === 'transfer'
+                    ? '<span style="font-size:12px;color:#F87171;">💳 تحويل</span>'
+                    : '<span style="font-size:12px;color:#60A5FA;">💵 كاش</span>';
+                const paidBadge = o.deliveryPaid
+                    ? '<span style="font-size:12px;color:var(--green);">✅ مدفوع</span>'
+                    : '<span style="font-size:12px;color:var(--yellow);">⏳ لم يُدفع</span>';
+
+                const itemsHtml = (o.items || []).map(i => {
+                    const prod = allProducts.find(p => p.name === i.name);
+                    const img = prod?.image
+                        ? `<img src="${prod.image}" onerror="this.style.display='none'">`
+                        : `<div style="width:40px;height:40px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📦</div>`;
+                    return `<div class="order-item-row">
+        ${img}
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px;">${i.name} ${i.selectedOption ? `<span style="color:var(--primary-light);font-size:11px;">(${i.selectedOption})</span>` : ''}</div>
+          <div style="color:var(--muted);font-size:12px;">الكمية: x${i.qty}</div>
+        </div>
+      </div>`;
+                }).join('');
+
+                const dateStr = o.date?.toDate ? o.date.toDate().toLocaleDateString('ar-SA', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+
+                return `<div class="order-card">
+      <div class="order-header">
+        <div>
+          <div class="order-name">${o.name || 'بدون اسم'}</div>
+          <div class="order-phone">${o.phone || ''}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px;">${o.addressText || ''}</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="status-badge ${st.cls}">${st.label}</span>
+            ${payBadge} ${paidBadge}
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">${dateStr}</div>
+        </div>
+        <div style="text-align:left;flex-shrink:0;">
+          <div class="order-total">${o.total || 0} ريال</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">توصيل: ${o.deliveryFee || 0} ريال</div>
+          ${o.deliveryBoyName ? `<div style="font-size:11px;color:var(--primary-light);margin-top:2px;">🚀 ${o.deliveryBoyName}</div>` : ''}
+        </div>
+      </div>
+      <div style="margin-top:10px;">${itemsHtml}</div>
+    </div>`;
+            }).join('');
+        }
+
+        // Add product
+        async function addProduct(e) {
+            e.preventDefault();
+            const file = document.getElementById('pImage').files[0];
+            const btn = document.getElementById('addBtn');
+            if (!file) return;
+                        btn.disabled = true;
+            document.getElementById('addBtnTxt').innerHTML = '<span class="spinner"></span> جاري الإضافة...';
+            try {
+                const img = await toBase64(file);
+                const optName = document.getElementById('pOptionName').value.trim();
+                const optVals = document.getElementById('pOptionValues').value.trim();
+                const opts = optVals ? optVals.split(',').map(v => v.trim()).filter(v => v) : [];
+                const unlimited = document.getElementById('pUnlimitedQty').checked;
+                const qtyVal = document.getElementById('pQty').value;
+                const quantity = unlimited ? null : (qtyVal === '' ? null : parseInt(qtyVal));
+                await db.collection('products').add({
+                    storeType: staffData.storeId,
+                    name: document.getElementById('pName').value.trim(),
+                    price: document.getElementById('pPrice').value.trim(),
+                    image: img,
+                    outOfStock: (!unlimited && quantity !== null && quantity <= 0),
+                    unlimitedQty: unlimited,
+                    quantity: quantity,
+                    optionName: optName || null,
+                    options: opts,
+                });
+                e.target.reset();
+                document.getElementById('addPreview').style.display = 'none';
+                document.getElementById('pQty').style.display = 'block';
+                addTempSelected.clear();
+                updateTempButtons();
+                closeAddModal();
+                toast('تم إضافة المنتج بنجاح ✅');
+            } catch (err) { toast('خطأ: ' + err.message, true); }
+            finally { btn.disabled = false; document.getElementById('addBtnTxt').textContent = 'إضافة المنتج'; }
+        }
+
+        // Delete
+        async function deleteProd(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+            try { await db.collection('products').doc(id).delete(); toast('تم الحذف'); }
+            catch (e) { toast('خطأ في الحذف', true); }
+        }
+
+        // Edit modal
+        function openEdit(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('editId').value = id;
+            document.getElementById('editCurrentImage').value = p.image || '';
+            document.getElementById('editName').value = p.name || '';
+            document.getElementById('editPrice').value = p.price || '';
+            document.getElementById('editOOS').checked = p.outOfStock || false;
+            document.getElementById('editPreview').style.display = 'none';
+            document.getElementById('editImage').value = '';
+            document.getElementById('editImgSizeErr').style.display = 'none';
+            // الكمية
+            const unlimited = p.unlimitedQty === true || p.quantity === null && p.unlimitedQty !== false;
+            document.getElementById('editUnlimitedQty').checked = unlimited;
+            const editQtyEl = document.getElementById('editQty');
+            if (unlimited) {
+                editQtyEl.style.display = 'none';
+                editQtyEl.value = '';
+            } else {
+                editQtyEl.style.display = 'block';
+                editQtyEl.value = p.quantity !== null && p.quantity !== undefined ? p.quantity : '';
+            }
+            // sync temp buttons
+            editTempSelected.clear();
+            (p.options || []).forEach(o => { if (o === 'حار' || o === 'بارد') editTempSelected.add(o); });
+            updateEditTempButtons();
+            document.getElementById('editModal').classList.add('open');
+        }
+        function closeEdit() { document.getElementById('editModal').classList.remove('open'); }
+
+        async function saveEdit(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const file = document.getElementById('editImage').files[0];
+            let imgData = document.getElementById('editCurrentImage').value;
+            if (file) {
+                                try { imgData = await toBase64(file); } catch (err) { toast('خطأ في الصورة', true); return; }
+            }
+            const optName = document.getElementById('editOptionName').value.trim();
+            const optVals = document.getElementById('editOptionValues').value.trim();
+            const opts = optVals ? optVals.split(',').map(v => v.trim()).filter(v => v) : [];
+            const unlimited = document.getElementById('editUnlimitedQty').checked;
+            const qtyVal = document.getElementById('editQty').value;
+            const quantity = unlimited ? null : (qtyVal === '' ? null : parseInt(qtyVal));
+            try {
+                await db.collection('products').doc(id).update({
+                    name: document.getElementById('editName').value.trim(),
+                    price: document.getElementById('editPrice').value.trim(),
+                    outOfStock: document.getElementById('editOOS').checked || (!unlimited && quantity !== null && quantity <= 0),
+                    unlimitedQty: unlimited,
+                    quantity: quantity,
+                    optionName: optName || null,
+                    options: opts,
+                    image: imgData,
+                });
+                closeEdit();
+                toast('تم حفظ التعديلات ✅');
+            } catch (err) { toast('خطأ: ' + err.message, true); }
+        }
+
+        // ===== درجة الحرارة - إضافة =====
+        const addTempSelected = new Set();
+        function toggleTempOption(val) {
+            if (addTempSelected.has(val)) {
+                addTempSelected.delete(val);
+            } else {
+                addTempSelected.add(val);
+            }
+            updateTempButtons();
+        }
+        function updateTempButtons() {
+            const hotBtn = document.getElementById('btnHot');
+            const coldBtn = document.getElementById('btnCold');
+            if (hotBtn) {
+                if (addTempSelected.has('حار')) {
+                    hotBtn.style.background = '#F97316';
+                    hotBtn.style.color = 'white';
+                    hotBtn.style.boxShadow = '0 4px 15px rgba(249,115,22,0.4)';
+                } else {
+                    hotBtn.style.background = 'rgba(249,115,22,0.1)';
+                    hotBtn.style.color = '#FB923C';
+                    hotBtn.style.boxShadow = 'none';
+                }
+            }
+            if (coldBtn) {
+                if (addTempSelected.has('بارد')) {
+                    coldBtn.style.background = '#38BDF8';
+                    coldBtn.style.color = 'white';
+                    coldBtn.style.boxShadow = '0 4px 15px rgba(56,189,248,0.4)';
+                } else {
+                    coldBtn.style.background = 'rgba(56,189,248,0.1)';
+                    coldBtn.style.color = '#7DD3FC';
+                    coldBtn.style.boxShadow = 'none';
+                }
+            }
+            document.getElementById('pOptionValues').value = [...addTempSelected].join(', ');
+            document.getElementById('pOptionName').value = addTempSelected.size > 0 ? 'الحرارة' : '';
+        }
+
+        // ===== درجة الحرارة - تعديل =====
+        const editTempSelected = new Set();
+        function toggleEditTempOption(val) {
+            if (editTempSelected.has(val)) {
+                editTempSelected.delete(val);
+            } else {
+                editTempSelected.add(val);
+            }
+            updateEditTempButtons();
+        }
+        function updateEditTempButtons() {
+            const hotBtn = document.getElementById('editBtnHot');
+            const coldBtn = document.getElementById('editBtnCold');
+            if (hotBtn) {
+                if (editTempSelected.has('حار')) {
+                    hotBtn.style.background = '#F97316';
+                    hotBtn.style.color = 'white';
+                    hotBtn.style.boxShadow = '0 4px 15px rgba(249,115,22,0.4)';
+                } else {
+                    hotBtn.style.background = 'rgba(249,115,22,0.1)';
+                    hotBtn.style.color = '#FB923C';
+                    hotBtn.style.boxShadow = 'none';
+                }
+            }
+            if (coldBtn) {
+                if (editTempSelected.has('بارد')) {
+                    coldBtn.style.background = '#38BDF8';
+                    coldBtn.style.color = 'white';
+                    coldBtn.style.boxShadow = '0 4px 15px rgba(56,189,248,0.4)';
+                } else {
+                    coldBtn.style.background = 'rgba(56,189,248,0.1)';
+                    coldBtn.style.color = '#7DD3FC';
+                    coldBtn.style.boxShadow = 'none';
+                }
+            }
+            document.getElementById('editOptionValues').value = [...editTempSelected].join(', ');
+            document.getElementById('editOptionName').value = editTempSelected.size > 0 ? 'الحرارة' : '';
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('open');
+        }
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('open');
+        }
+
+        // تبديل ظهور حقل الكمية
+        function toggleQtyField(mode) {
+            const checkbox = document.getElementById(mode === 'add' ? 'pUnlimitedQty' : 'editUnlimitedQty');
+            const qtyInput = document.getElementById(mode === 'add' ? 'pQty' : 'editQty');
+            qtyInput.style.display = checkbox.checked ? 'none' : 'block';
+        }
+        // Close modal when clicking overlay background
+        document.getElementById('addModal').addEventListener('click', function (e) {
+            if (e.target === this) closeAddModal();
+        });
+
+        // Enter key
+        document.getElementById('pInp').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+        document.getElementById('uInp').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pInp').focus(); });
+    </script>
+</body>
+
+</html>
