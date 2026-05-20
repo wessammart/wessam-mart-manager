@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>وسام مارت - الإدارة</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+body{background:#0f172a;color:#fff;min-height:100vh}
+:root{--primary:#3b82f6;--yellow:#facc15;--bg:#0f172a;--card:#1e293b;--muted:#94a3b8;--border:#334155;--success:#22c55e;--danger:#ef4444}
+input,select,textarea{width:100%;padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:#fff;font-size:14px}
+button{padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-weight:bold;transition:.2s;font-size:13px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+header{background:var(--card);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+header h1{font-size:18px}
+nav{display:flex;gap:6px;padding:10px;overflow-x:auto;background:var(--card);margin-bottom:12px}
+nav button{padding:6px 14px;border-radius:20px;font-size:13px;white-space:nowrap}
+nav button.active{background:var(--primary);color:#fff}
+.section{display:none;padding:12px;max-width:900px;margin:auto}
+.section.active{display:block}
+.card{background:var(--card);border-radius:10px;padding:12px;margin-bottom:10px}
+.card h3{font-size:14px;margin-bottom:4px}
+.card p{font-size:13px;color:var(--muted);margin-bottom:4px}
+.card .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.status{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:bold;display:inline-block}
+.status-pending{background:#facc15;color:#000}
+.status-accepted{background:#3b82f6;color:#fff}
+.status-preparing{background:#a855f7;color:#fff}
+.status-ready{background:#22c55e;color:#fff}
+.status-delivered{background:#64748b;color:#fff}
+.status-cancelled{background:#ef4444;color:#fff}
+.form-group{margin-bottom:10px}
+.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:6px 8px;text-align:right;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-size:12px}
+.pill{display:inline-block;background:var(--bg);padding:3px 10px;border-radius:12px;font-size:12px;margin:2px;cursor:pointer}
+.pill.active{background:var(--primary);color:#fff}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);padding:12px 24px;border-radius:10px;z-index:300;display:none;font-size:14px}
+.toast.show{display:block}
+.mt-4{margin-top:12px}
+@media(min-width:768px){.form-row{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head><body>
+
+<header><h1>⚙️ لوحة الإدارة</h1><div id="headerUser" style="font-size:13px;color:var(--muted)"></div></header>
+
+<nav id="navBar">
+  <button onclick="show('login');loadLogin()" class="active" id="navLogin">تسجيل الدخول</button>
+  <button onclick="show('orders');loadOrders()" id="navOrders">الطلبات</button>
+  <button onclick="show('products');loadProducts()" id="navProducts">المنتجات</button>
+  <button onclick="show('categories');loadConfig('categories','catList')" id="navCats">التصنيفات</button>
+  <button onclick="show('customCats');loadCollection('customCategories','customCatTable','الاسم')" id="navCustomCats">أقسام مخصصة</button>
+  <button onclick="show('delivery')" id="navDelivery">الموصلين</button>
+  <button onclick="show('settings')" id="navSettings">الإعدادات</button>
+</nav>
+
+<!-- ======= Login ======= -->
+<div class="section active" id="secLogin">
+  <div class="card" style="max-width:400px;margin:20px auto;padding:20px">
+    <h2 style="font-size:18px;margin-bottom:12px">🔐 دخول المشرفين</h2>
+    <input id="loginName" placeholder="اسم المستخدم" style="margin-bottom:8px">
+    <input id="loginPass" type="password" placeholder="كلمة المرور" style="margin-bottom:8px">
+    <button class="btn-primary" onclick="doLogin()" style="width:100%">دخول</button>
+    <p id="loginErr" style="color:var(--danger);font-size:13px;margin-top:8px;display:none"></p>
+  </div>
+</div>
+
+<!-- ======= Orders ======= -->
+<div class="section" id="secOrders">
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+    <button class="btn-outline" onclick="loadOrders()">🔄 تحديث</button>
+    <select id="statusFilter" onchange="loadOrders()" style="width:auto;max-width:140px">
+      <option value="">كل الطلبات</option>
+      <option value="pending">قيد الانتظار</option>
+      <option value="accepted">تم القبول</option>
+      <option value="preparing">قيد التحضير</option>
+      <option value="ready">جاهز</option>
+      <option value="delivered">تم التوصيل</option>
+      <option value="cancelled">ملغي</option>
+    </select>
+  </div>
+  <div id="ordersList"></div>
+</div>
+
+<!-- ======= Products ======= -->
+<div class="section" id="secProducts">
+  <button class="btn-primary" onclick="openProductForm()">+ إضافة منتج</button>
+  <button class="btn-outline" onclick="loadProducts()" style="margin-right:6px">🔄</button>
+  <table style="margin-top:10px"><thead><tr><th>الاسم</th><th>السعر</th><th>القسم</th><th></th></tr></thead><tbody id="prodTable"></tbody></table>
+</div>
+
+<!-- ======= Product Form ======= -->
+<div class="section" id="secProdForm">
+  <button class="btn-outline" onclick="show('products')" style="margin-bottom:10px">← رجوع</button>
+  <div class="card" style="max-width:600px;margin:auto">
+    <h2 id="prodFormTitle" style="font-size:16px;margin-bottom:12px">إضافة منتج</h2>
+    <div class="form-group"><label>الاسم</label><input id="pfName"></div>
+    <div class="form-row">
+      <div class="form-group"><label>السعر</label><input id="pfPrice" placeholder="مثال: 25 ريال"></div>
+      <div class="form-group"><label>القسم (storeType)</label>
+        <select id="pfType"><option value="market">بقالات</option><option value="restaurant">مطاعم</option><option value="coffee">كوفي</option><option value="coffeeMudhal">كوفي مدهال</option><option value="veggies">خضار</option><option value="homemade">منزلي</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>صورة (رابط)</label><input id="pfImage" placeholder="https://example.com/img.jpg"></div>
+    <div class="form-group"><label>خيارات (مفصولة بفاصلة)</label><input id="pfOptions" placeholder="حجم وسط,حجم كبير"></div>
+    <button class="btn-primary mt-4" onclick="saveProduct()" id="pfBtn" style="width:100%">إضافة</button>
+    <p id="pfErr" style="color:var(--danger);font-size:13px;margin-top:8px;display:none"></p>
+  </div>
+</div>
+
+<!-- ======= Categories ======= -->
+<div class="section" id="secCategories">
+  <div style="display:flex;gap:6px;flex-wrap:wrap" id="catList"></div>
+  <div class="card mt-4"><h3>إضافة تصنيف</h3>
+    <div class="form-row"><div class="form-group"><input id="newCatName" placeholder="الاسم"></div><div class="form-group"><input id="newCatEmoji" placeholder="الإيموجي"></div></div>
+    <button class="btn-primary" onclick="addCategory()">إضافة</button>
+  </div>
+</div>
+
+<!-- ======= Custom Categories ======= -->
+<div class="section" id="secCustomCats">
+  <button class="btn-outline" onclick="loadCollection('customCategories','customCatTable','الاسم')">🔄</button>
+  <div class="card mt-4">
+    <h3>إضافة قسم مخصص</h3>
+    <div class="form-row"><div class="form-group"><input id="ccName" placeholder="الاسم"></div><div class="form-group"><input id="ccEmoji" placeholder="الإيموجي"></div></div>
+    <div class="form-group"><input id="ccDesc" placeholder="الوصف"></div>
+    <button class="btn-primary" onclick="addCustomCat()">إضافة</button>
+  </div>
+  <table style="margin-top:10px"><thead><tr><th>الاسم</th><th></th></tr></thead><tbody id="customCatTable"></tbody></table>
+</div>
+
+<!-- ======= Delivery Staff ======= -->
+<div class="section" id="secDelivery">
+  <button class="btn-outline" onclick="loadStaff()">🔄</button>
+  <div class="card mt-4">
+    <h3>إضافة موصل</h3>
+    <div class="form-row"><div class="form-group"><input id="staffName" placeholder="الاسم"></div><div class="form-group"><input id="staffPhone" placeholder="رقم الجوال"></div></div>
+    <div class="form-row"><div class="form-group"><input id="staffPass" type="password" placeholder="كلمة المرور"></div><div class="form-group"><input id="staffArea" placeholder="المنطقة"></div></div>
+    <button class="btn-primary" onclick="saveStaff()">إضافة</button>
+  </div>
+  <table style="margin-top:10px"><thead><tr><th>الاسم</th><th>رقم الجوال</th><th>المنطقة</th><th></th></tr></thead><tbody id="staffTable"></tbody></table>
+</div>
+
+<!-- ======= Settings ======= -->
+<div class="section" id="secSettings">
+  <div class="card">
+    <h3>رسوم التوصيل</h3>
+    <div class="form-row"><div class="form-group"><input id="delFee" type="number" step="1"></div></div>
+    <button class="btn-primary" onclick="saveSetting('delivery',{fee:Number(document.getElementById('delFee').value)})">حفظ</button>
+  </div>
+  <div class="card mt-4">
+    <h3>معلومات البنك</h3>
+    <div class="form-group"><textarea id="bankInfo" rows="3" placeholder="معلومات الحساب البنكي"></textarea></div>
+    <button class="btn-primary" onclick="saveSetting('bank',{info:document.getElementById('bankInfo').value})">حفظ</button>
+  </div>
+  <div class="card mt-4">
+    <h3>العنوان</h3>
+    <div class="form-group"><input id="addrText" placeholder="عنوان المتجر"></div>
+    <button class="btn-primary" onclick="saveSetting('address',{text:document.getElementById('addrText').value})">حفظ</button>
+  </div>
+  <div class="card mt-4">
+    <h3>حذف منتج برقم ID</h3>
+    <div class="form-row"><div class="form-group"><input id="delProdId" placeholder="معرف المنتج"></div></div>
+    <button class="btn-danger" onclick="deleteProduct()">حذف</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== REST API ====================
+const PID='wessam2',KEY='AIzaSyBGM-ORvTV4juxPfiA8Mb7Vb25_0EQchEY';
+const BASE=`https://firestore.googleapis.com/v1/projects/${PID}/databases/(default)/documents`;
+
+async function api(method,path,body){
+  if(path.includes('?'))path+='&key='+KEY;else path+='?key='+KEY;
+  const opt={method,headers:{}};
+  if(body){opt.headers['Content-Type']='application/json';opt.body=JSON.stringify({fields:getFields(body)})}
+  const r=await fetch(BASE+'/'+path,opt);
+  if(r.status===429){throw new Error('الحد مسموح تجاوز، حاول بعد دقيقة')}
+  const d=await r.json();if(d.error)throw new Error(d.error.message);return d;
+}
+function getFields(o){const f={};for(const[k,v]of(Object.entries(o||{}))){if(v===null||v===undefined){f[k]={nullValue:null}}else if(typeof v==='string'){f[k]={stringValue:v}}else if(typeof v==='boolean'){f[k]={booleanValue:v}}else if(typeof v==='number'){f[k]=Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v}}else{f[k]={stringValue:String(v)}}}return f}
+function docs(r){return(r.documents||[]).map(d=>{const o={id:d.name.split('/').pop()};const ff=d.fields||{};for(const[k,v]of Object.entries(ff)){if(v.stringValue!==undefined)o[k]=v.stringValue;else if(v.booleanValue!==undefined)o[k]=v.booleanValue;else if(v.integerValue!==undefined)o[k]=Number(v.integerValue);else if(v.doubleValue!==undefined)o[k]=v.doubleValue;else if(v.arrayValue)o[k]=v.arrayValue.values?.(x=>x.stringValue)||[];else o[k]=null}return o})}
+async function apiGet(path){return api('GET',path)}
+async function apiDel(path){return api('DELETE',path)}
+async function apiAdd(col,data){return api('POST',col,data)}
+async function apiUpdate(col,id,data){return api('PATCH',col+'/'+id,data)}
+
+let user=null;
+
+// ==================== Navigation ====================
+function show(s){
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sec'+s.charAt(0).toUpperCase()+s.slice(1)).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const n=document.getElementById('nav'+s.charAt(0).toUpperCase()+s.slice(1));if(n)n.classList.add('active');
+}
+
+// ==================== Login ====================
+async function doLogin(){
+  const name=document.getElementById('loginName').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  if(!name||!pass){document.getElementById('loginErr').textContent='املأ الحقول';document.getElementById('loginErr').style.display='block';return}
+  try{
+    const r=await apiGet('managers');const mgrs=docs(r);
+    const m=mgrs.find(x=>x.name===name);
+    if(!m){document.getElementById('loginErr').textContent='المستخدم غير موجود';document.getElementById('loginErr').style.display='block';return}
+    const hp=await hash(pass);const hpl=await hash(pass.toLowerCase());
+    if(m.password===hp||m.password===hpl||m.password===pass){user=m;document.getElementById('headerUser').textContent='👤 '+user.name;toast('مرحباً '+user.name);show('orders');loadOrders();return}
+    document.getElementById('loginErr').textContent='كلمة المرور غير صحيحة';document.getElementById('loginErr').style.display='block'
+  }catch(e){document.getElementById('loginErr').textContent='خطأ: '+e.message;document.getElementById('loginErr').style.display='block'}
+}
+async function hash(p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(p));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+
+// ==================== Orders ====================
+async function loadOrders(){
+  try{
+    const r=await apiGet('orders');const all=docs(r);
+    const filter=document.getElementById('statusFilter').value;
+    const items=filter?all.filter(o=>o.status===filter):all;
+    const el=document.getElementById('ordersList');
+    if(!items.length){el.innerHTML='<p style="color:var(--muted)">لا توجد طلبات</p>';return}
+    el.innerHTML=items.map(o=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:start">
+      <div><span class="status status-${o.status}">${statusText(o.status)}</span><span style="font-size:11px;color:var(--muted);margin-right:8px">${o.createdAt?new Date(o.createdAt).toLocaleString('ar-SA'):''}</span></div>
+      <div style="font-size:12px;color:var(--muted)">#${o.id.slice(-6)}</div></div>
+      <p style="margin-top:6px"><strong>👤 ${o.customerName||''}</strong> 📞 ${o.customerPhone||''}</p>
+      <p style="font-size:13px">📍 ${o.address||''}${o.notes?' — ملاحظات: '+o.notes:''}</p>
+      <p style="font-size:12px;color:var(--primary)">💰 ${o.total||0} ريال (دفع: ${o.paymentMethod||'cash'})</p>
+      ${o.items?`<details><summary style="font-size:12px;color:var(--muted);cursor:pointer">المنتجات</summary><div style="font-size:12px;margin-top:4px;color:var(--muted)">${formatItems(o.items)}</div></details>`:''}
+      <div class="actions">${getOrderActions(o)}</div></div>`).join('')
+  }catch(e){toast('خطأ في تحميل الطلبات: '+e.message)}
+}
+function statusText(s){const m={pending:'قيد الانتظار',accepted:'مقبول',preparing:'قيد التحضير',ready:'جاهز',delivered:'مكتمل',cancelled:'ملغي'};return m[s]||s}
+function getOrderActions(o){
+  if(o.status==='pending')return `<button class="btn-success" onclick="changeStatus('${o.id}','accepted')">قبول</button><button class="btn-danger" onclick="changeStatus('${o.id}','cancelled')">إلغاء</button>`;
+  if(o.status==='accepted')return `<button class="btn-primary" onclick="changeStatus('${o.id}','preparing')">قيد التحضير</button>`;
+  if(o.status==='preparing')return `<button class="btn-primary" onclick="changeStatus('${o.id}','ready')">جاهز</button>`;
+  if(o.status==='ready')return `<button class="btn-success" onclick="changeStatus('${o.id}','delivered')">تم التوصيل</button>`;
+  return '';
+}
+function formatItems(items){
+  try{const arr=typeof items==='string'?JSON.parse(items):items;return arr.map(i=>`${i.name} × ${i.qty} = ${i.price}`).join('<br>')}catch(e){return String(items)}
+}
+async function changeStatus(id,status){
+  try{await apiUpdate('orders',id,{status});loadOrders();toast('تم تحديث الحالة ✅')}catch(e){toast('خطأ: '+e.message)}
+}
+
+// ==================== Products ====================
+async function loadProducts(){
+  try{const r=await apiGet('products');const all=docs(r);
+    document.getElementById('prodTable').innerHTML=all.map(p=>`<tr><td>${p.name}</td><td>${p.price}</td><td>${p.storeType||''}</td>
+    <td><button class="btn-outline btn-sm" onclick="editProduct('${p.id}')">✏️</button>
+    <button class="btn-danger btn-sm" onclick="confirmDelete('${p.id}','${p.name}')">🗑️</button></td></tr>`).join('')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+function openProductForm(data){
+  const f=document.getElementById('secProdForm');
+  document.getElementById('prodFormTitle').textContent=data?'تعديل منتج':'إضافة منتج';
+  document.getElementById('pfName').value=data?.name||'';
+  document.getElementById('pfPrice').value=data?.price||'';
+  document.getElementById('pfType').value=data?.storeType||'market';
+  document.getElementById('pfImage').value=data?.image||'';
+  document.getElementById('pfOptions').value=data?.options?data.options.join(','):'';
+  const btn=document.getElementById('pfBtn');btn.textContent=data?'تحديث':'إضافة';
+  btn.dataset.editId=data?.id||'';
+  show('prodForm');
+}
+function editProduct(id){fetchProduct(id).then(d=>openProductForm(d))}
+async function fetchProduct(id){
+  try{const r=await apiGet('products/'+id);const d=r.fields?{(Object.entries(r.fields||{}).reduce((o,[k,v])=>{o[k]=v.stringValue??v.integerValue??v.doubleValue??v.booleanValue??null;return o},{})):null};if(d){d.id=id;return d}}catch(e){}return null}
+async function saveProduct(){
+  const name=document.getElementById('pfName').value.trim();
+  const price=document.getElementById('pfPrice').value.trim();
+  const storeType=document.getElementById('pfType').value;
+  const image=document.getElementById('pfImage').value.trim();
+  const opts=document.getElementById('pfOptions').value.trim();
+  if(!name||!price){document.getElementById('pfErr').textContent='الاسم والسعر مطلوبان';document.getElementById('pfErr').style.display='block';return}
+  const data={name,price,storeType,image:image||null,options:opts?opts.split(',').map(x=>x.trim()):[]};
+  const editId=document.getElementById('pfBtn').dataset.editId;
+  document.getElementById('pfErr').style.display='none';
+  try{
+    if(editId){await apiUpdate('products',editId,data);toast('تم تحديث المنتج ✅')}else{await apiAdd('products',data);toast('تمت إضافة المنتج ✅')}
+    document.getElementById('pfBtn').dataset.editId='';show('products');loadProducts()
+  }catch(e){document.getElementById('pfErr').textContent='خطأ: '+e.message;document.getElementById('pfErr').style.display='block'}
+}
+async function confirmDelete(id,name){if(confirm('حذف "'+name+'"?')){try{await apiDel('products/'+id);loadProducts();toast('تم الحذف ✅')}catch(e){toast('خطأ: '+e.message)}}}
+function deleteProduct(){
+  const id=document.getElementById('delProdId').value.trim();
+  if(!id||!confirm('حذف المنتج "'+id+'"؟'))return;
+  apiDel('products/'+id).then(()=>{toast('تم الحذف');document.getElementById('delProdId').value=''}).catch(e=>toast('خطأ: '+e.message))
+}
+
+// ==================== Categories ====================
+let catCache=null;
+async function loadConfig(col,elId){
+  try{
+    if(col==='categories'){
+      const r=await apiGet('settings/categories');
+      const d=r.fields||{};const cats=Object.keys(d).filter(k=>d[k].booleanValue);
+      document.getElementById(elId).innerHTML=cats.length?cats.map(c=>`<span class="pill active" onclick="removeCategory('${c}')">${c} ✕</span>`).join(''):'<p style="color:var(--muted)">لا توجد تصنيفات</p>';
+    }
+  }catch(e){toast('خطأ: '+e.message)}
+}
+async function addCategory(){
+  const name=document.getElementById('newCatName').value.trim();
+  if(!name)return;
+  try{
+    const r=await apiGet('settings/categories');
+    const fields=r.fields||{};
+    // Need to update: set the field to true
+    const body={fields:{...fields}};body.fields[name]={booleanValue:true};
+    await api('PATCH','settings/categories',Object.fromEntries(Object.entries(fields).map(([k,v])=>[k,v.booleanValue?true:false]).concat([[name,true]])));
+    // Actually, simpler: re-read and update
+    const r2=await apiGet('settings/categories');const f=r2.fields||{};
+    // Build update body
+    const updateData={};for(const[k,v]of Object.entries(f)){updateData[k]=v.booleanValue}
+    updateData[name]=true;
+    await apiUpdate('settings','categories',updateData);
+    document.getElementById('newCatName').value='';loadConfig('categories','catList');toast('تمت الإضافة ✅')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+async function removeCategory(name){
+  if(!confirm('إزالة "'+name+'"؟'))return;
+  try{
+    const r=await apiGet('settings/categories');const f=r.fields||{};
+    const updateData={};for(const[k,v]of Object.entries(f)){if(k!==name)updateData[k]=v.booleanValue}
+    await apiUpdate('settings','categories',updateData);
+    loadConfig('categories','catList');toast('تمت الإزالة ✅')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+
+// ==================== Custom Categories ====================
+async function loadCollection(col,elId,label){
+  try{const r=await apiGet(col);const all=docs(r);
+    document.getElementById(elId).innerHTML=all.map(c=>`<tr><td>${c.name||c.id}</td>
+    <td><button class="btn-danger btn-sm" onclick="deleteDoc('${col}','${c.id}')">🗑️</button></td></tr>`).join('')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+async function addCustomCat(){
+  const name=document.getElementById('ccName').value.trim();
+  if(!name)return;
+  try{await apiAdd('customCategories',{name,emoji:document.getElementById('ccEmoji').value.trim()||'📦',desc:document.getElementById('ccDesc').value.trim()||null});
+    document.getElementById('ccName').value='';document.getElementById('ccEmoji').value='';document.getElementById('ccDesc').value='';
+    loadCollection('customCategories','customCatTable');toast('تمت الإضافة ✅')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+async function deleteDoc(col,id){if(confirm('حذف؟')){try{await apiDel(col+'/'+id);loadCollection(col,id.includes('customCat')?'customCatTable':'staffTable');toast('تم الحذف ✅')}catch(e){toast('خطأ: '+e.message)}}}
+
+// ==================== Staff ====================
+async function saveStaff(){
+  const name=document.getElementById('staffName').value.trim();
+  const phone=document.getElementById('staffPhone').value.trim();
+  const pass=document.getElementById('staffPass').value.trim();
+  const area=document.getElementById('staffArea').value.trim();
+  if(!name||!phone||!pass){toast('املأ الحقول المطلوبة');return}
+  try{
+    const hp=await hash(pass);
+    await apiAdd('workers',{name,phone,password:hp,area:area||null});
+    document.getElementById('staffName').value='';document.getElementById('staffPhone').value='';document.getElementById('staffPass').value='';document.getElementById('staffArea').value='';
+    loadStaff();toast('تمت الإضافة ✅')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+async function loadStaff(){
+  try{const r=await apiGet('workers');const all=docs(r);
+    document.getElementById('staffTable').innerHTML=all.map(w=>`<tr><td>${w.name}</td><td>${w.phone}</td><td>${w.area||''}</td>
+    <td><button class="btn-danger btn-sm" onclick="deleteStaff('${w.id}')">🗑️</button></td></tr>`).join('')
+  }catch(e){toast('خطأ: '+e.message)}
+}
+async function deleteStaff(id){if(confirm('حذف الموصل؟')){try{await apiDel('workers/'+id);loadStaff();toast('تم الحذف ✅')}catch(e){toast('خطأ: '+e.message)}}}
+
+// ==================== Settings ====================
+async function saveSetting(docId,data){
+  try{await apiUpdate('settings',docId,data);toast('تم الحفظ ✅')}catch(e){toast('خطأ: '+e.message)}
+}
+async function loadSettings(){
+  try{
+    const r=await apiGet('settings/delivery');if(r.fields?.fee){document.getElementById('delFee').value=r.fields.fee.integerValue||r.fields.fee.doubleValue||''}
+    const rb=await apiGet('settings/bank');if(rb.fields?.info){document.getElementById('bankInfo').value=rb.fields.info.stringValue||''}
+    const ra=await apiGet('settings/address');if(ra.fields?.text){document.getElementById('addrText').value=ra.fields.text.stringValue||''}
+  }catch(e){}
+}
+loadSettings();
+
+// ==================== Toast ====================
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+</script>
+</body></html>
