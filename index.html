@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -1135,11 +1135,11 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy, doc, setDoc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeFirestore, collection, addDoc, onSnapshot, query, where, orderBy, doc, setDoc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyA2N_lsZ7yyvT1kIydXFkW_fLVFH0kQRBk", authDomain: "wessam-8ac1d.firebaseapp.com", projectId: "wessam-8ac1d", storageBucket: "wessam-8ac1d.firebasestorage.app", messagingSenderId: "140878579052", appId: "1:140878579052:web:53a52b34a176171cf6df49" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
+        const app = initializeApp(firebaseConfig); const db = initializeFirestore(app, { experimentalForceLongPolling: true }); const auth = getAuth(app);
 
         onSnapshot(doc(db, 'settings', 'maintenance'), (snap) => { if (snap.exists() && snap.data().active === true) { document.body.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0C1222;color:white;text-align:center;font-family:'Tajawal',sans-serif;padding:20px;"><h1 style="font-size:3rem;margin-bottom:1rem;">🛠️ تحت الصيانة</h1><p style="font-size:1.2rem;color:#94A3B8;">المتجر مغلق مؤقتاً للتحديث، نعود قريباً!</p></div>`; } });
 
@@ -1783,3 +1783,5 @@
 </body>
 
 </html>
+
+
